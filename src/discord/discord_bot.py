@@ -292,7 +292,15 @@ class BernasDiscordBot(commands.Bot):
                 name="Informacoes",
                 value="`!status` - Status do bot\n"
                       "`!revenue` - Sua receita gerada\n"
+                      "`!finduser <nome>` - Encontra usuario\n"
                       "`!bothelp` - Esta mensagem",
+                inline=False
+            )
+
+            embed.add_field(
+                name="Administracao (apenas dono)",
+                value="`!dm <user_id> <mensagem>` - Envia mensagem direta\n"
+                      "`!broadcast <mensagem>` - Anuncia para todos os servidores",
                 inline=False
             )
 
@@ -341,7 +349,7 @@ class BernasDiscordBot(commands.Bot):
             estimated_revenue = Decimal("0.05") * self.revenue_tracker.revenue_stats["total_messages"]
 
             embed = discord.Embed(
-                title=f"💰 Sua Receita - {user_name}",
+                title=f"Sua Receita - {user_name}",
                 color=discord.Color.gold()
             )
 
@@ -364,6 +372,76 @@ class BernasDiscordBot(commands.Bot):
             embed.set_footer(text="Receita enviada automaticamente a cada 10 USDC")
 
             await ctx.send(embed=embed)
+
+        @self.command(name="dm", help="Envia mensagem direta para um usuário (apenas admin)")
+        async def dm(ctx, user_id: str, *, message: str):
+            """Envia mensagem direta para um usuário"""
+            # Verificar se o usuário é admin (você pode ajustar isso)
+            if ctx.author.id != 1505474529257066506:  # Substitua pelo seu ID de usuário
+                await ctx.send("Apenas o dono do bot pode usar este comando.")
+                return
+
+            try:
+                user = await self.fetch_user(int(user_id))
+                if user:
+                    await user.send(f"Mensagem de {ctx.author.name}: {message}")
+                    await ctx.send(f"Mensagem enviada para {user.name} ({user.id})")
+                else:
+                    await ctx.send(f"Usuario com ID {user_id} nao encontrado.")
+            except Exception as e:
+                await ctx.send(f"Erro ao enviar mensagem: {e}")
+
+        @self.command(name="broadcast", help="Envia mensagem para todos os servidores (apenas admin)")
+        async def broadcast(ctx, *, message: str):
+            """Envia mensagem para todos os servidores"""
+            if ctx.author.id != 1505474529257066506:  # Substitua pelo seu ID de usuário
+                await ctx.send("Apenas o dono do bot pode usar este comando.")
+                return
+
+            try:
+                total_sent = 0
+                for guild in self.guilds:
+                    # Encontrar canal de texto padrão
+                    channel = guild.system_channel or guild.text_channels[0] if guild.text_channels else None
+                    if channel:
+                        try:
+                            await channel.send(f"📢 **Anuncio do BERNAS-DA-SAL**: {message}")
+                            total_sent += 1
+                        except:
+                            continue
+
+                await ctx.send(f"Anuncio enviado para {total_sent} servidores.")
+            except Exception as e:
+                await ctx.send(f"Erro ao fazer broadcast: {e}")
+
+        @self.command(name="finduser", help="Encontra usuário pelo nome")
+        async def finduser(ctx, *, username: str):
+            """Encontra usuário pelo nome"""
+            try:
+                found_users = []
+                for guild in self.guilds:
+                    for member in guild.members:
+                        if username.lower() in member.name.lower() or (member.nick and username.lower() in member.nick.lower()):
+                            found_users.append(f"{member.name} ({member.id}) - {guild.name}")
+
+                if found_users:
+                    embed = discord.Embed(
+                        title=f"Usuarios encontrados: {username}",
+                        description="\n".join(found_users[:10]),  # Mostrar apenas 10 primeiros
+                        color=discord.Color.blue()
+                    )
+                    if len(found_users) > 10:
+                        embed.set_footer(text=f"Mostrando 10 de {len(found_users)} usuarios encontrados")
+                else:
+                    embed = discord.Embed(
+                        title="Nenhum usuario encontrado",
+                        description=f"Nenhum usuario com '{username}' foi encontrado.",
+                        color=discord.Color.red()
+                    )
+
+                await ctx.send(embed=embed)
+            except Exception as e:
+                await ctx.send(f"Erro ao buscar usuario: {e}")
 
     async def on_ready(self):
         """Evento quando o bot está pronto"""

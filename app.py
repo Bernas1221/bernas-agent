@@ -22,6 +22,7 @@ async def health_check(request):
 async def status_check(request):
     """Endpoint de status"""
     import os
+    from datetime import datetime
 
     # Verificar variáveis de ambiente
     env_vars = {

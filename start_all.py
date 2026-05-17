@@ -129,7 +129,7 @@ async def start_revenue_generators():
         logger.error(f"❌ Erro ao iniciar Revenue Generators: {e}")
         return None
 
-async def start_main_bot():
+async def start_main_bot(discord_bot_instance=None):
     """Inicia o bot principal (servidor HTTP)"""
     try:
         from app import app
@@ -139,6 +139,12 @@ async def start_main_bot():
         PORT = int(os.getenv("PORT", "8080"))
         HOST = "0.0.0.0"
 
+        # Adicionar endpoints do Discord se o bot estiver ativo
+        if discord_bot_instance:
+            from src.discord.message_api import setup_routes
+            setup_routes(app, discord_bot_instance)
+            logger.info("✅ API do Discord integrada ao servidor HTTP")
+
         # Adicionar endpoints do MOLTBOOK
         from src.monitoring.moltbook_dashboard import (
             handle_moltbook_dashboard,
@@ -147,6 +153,13 @@ async def start_main_bot():
 
         app.router.add_get('/moltbook', handle_moltbook_dashboard)
         app.router.add_get('/api/v1/moltbook/metrics', handle_moltbook_metrics)
+
+        # Adicionar endpoint de teste do Discord
+        try:
+            from test_discord_endpoint import discord_test
+            app.router.add_get('/test/discord', discord_test)
+        except:
+            pass
 
         # Iniciar servidor
         runner = web.AppRunner(app)
@@ -254,18 +267,18 @@ async def main():
         tasks.append(monitor_task)
         systems["monitor"] = systems_status
 
-        # 2. Iniciar servidor HTTP principal
+        # 2. Iniciar Discord Bot (se token configurado)
         logger.info("\n" + "="*50)
-        logger.info("1. Iniciando Servidor HTTP...")
-        http_runner = await start_main_bot()
-        systems_status["http_server"] = True
-
-        # 3. Iniciar Discord Bot (se token configurado)
-        logger.info("\n" + "="*50)
-        logger.info("2. Iniciando Discord Bot...")
+        logger.info("1. Iniciando Discord Bot...")
         discord_bot = await start_discord_bot()
         if discord_bot:
             systems_status["discord_bot"] = True
+
+        # 3. Iniciar servidor HTTP principal (passar instância do bot)
+        logger.info("\n" + "="*50)
+        logger.info("2. Iniciando Servidor HTTP...")
+        http_runner = await start_main_bot(discord_bot)
+        systems_status["http_server"] = True
 
         # 4. Iniciar MOLTBOOK Dashboard
         logger.info("\n" + "="*50)
