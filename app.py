@@ -20,43 +20,31 @@ async def health_check(request):
     })
 
 async def status_check(request):
-    """Endpoint de status"""
+    """Endpoint de status simplificado"""
     import os
-    import time
 
-    # Verificar variáveis de ambiente
-    env_vars = {
-        "DISCORD_BOT_TOKEN": "present" if os.getenv("DISCORD_BOT_TOKEN") else "missing",
-        "SOLANA_PRIVATE_KEY": "present" if os.getenv("SOLANA_PRIVATE_KEY") else "missing",
-        "SIMULATION_MODE": os.getenv("SIMULATION_MODE", "true"),
-        "PORT": os.getenv("PORT", "8080"),
-        "RENDER": os.getenv("RENDER", "false")
-    }
+    try:
+        # Verificar variáveis de ambiente básicas
+        discord_token_present = bool(os.getenv("DISCORD_BOT_TOKEN"))
 
-    # Verificar comprimento do token (se presente)
-    discord_token = os.getenv("DISCORD_BOT_TOKEN", "")
-    token_length = len(discord_token) if discord_token else 0
-
-    return web.json_response({
-        "status": "running",
-        "name": "BERNAS-DA-SAL",
-        "description": "Bot de Economia Autonoma entre IAs",
-        "components": {
-            "http_api": "active",
-            "simulation_mode": env_vars["SIMULATION_MODE"],
-            "discord_bot": "active" if env_vars["DISCORD_BOT_TOKEN"] == "present" else "inactive",
-            "solana_wallet": "active" if env_vars["SOLANA_PRIVATE_KEY"] == "present" else "inactive"
-        },
-        "environment": env_vars,
-        "discord_token_info": {
-            "present": env_vars["DISCORD_BOT_TOKEN"] == "present",
-            "length": token_length,
-            "valid_length": token_length > 50  # Tokens geralmente têm >50 chars
-        },
-        "revenue_system": "active",
-        "token_manager": "active",
-        "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
-    })
+        return web.json_response({
+            "status": "running",
+            "name": "BERNAS-DA-SAL",
+            "description": "Bot de Economia Autonoma entre IAs",
+            "components": {
+                "http_api": "active",
+                "simulation_mode": os.getenv("SIMULATION_MODE", "true"),
+                "discord_bot": "active" if discord_token_present else "inactive",
+                "solana_wallet": "active" if os.getenv("SOLANA_PRIVATE_KEY") else "inactive"
+            },
+            "discord_token_present": discord_token_present,
+            "timestamp": "2026-05-17T08:51:49Z"
+        })
+    except Exception as e:
+        return web.json_response({
+            "status": "error",
+            "error": str(e)
+        }, status=500)
 
 async def dashboard(request):
     """Dashboard simplificado"""
