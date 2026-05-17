@@ -5,6 +5,9 @@
 aiohttp>=3.9.0
 httpx>=0.25.0
 
+# DISCORD BOT
+discord.py>=2.7.0
+
 # SERVER (para Render.com)
 gunicorn>=21.0.0
 
@@ -14,3 +17,8 @@ pydantic>=2.0.0
 
 # BLOCKCHAIN - SOLANA (opcional para simulação)
 base58>=2.1.1
+
+# REVENUE GENERATORS (dependências adicionais)
+google-generativeai>=0.3.0  # Para serviços de IA reais
+anthropic>=0.7.0  # Para Claude API (opcional)
+openai>=1.0.0  # Para OpenAI API (opcional)
