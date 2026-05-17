@@ -54,9 +54,10 @@
 
 ### 🔧 EM CONFIGURAÇÃO FINAL
 - **Discord Bot** - Código completo, aguardando ativação de intents
-  - Comandos: `!chat`, `!economy`, `!services`, `!buy`, `!status`, `!revenue`, `!bothelp`
+  - Comandos: `!chat`, `!economy`, `!services`, `!buy`, `!status`, `!revenue`, `!bothelp`, `!dm`, `!broadcast`, `!finduser`
   - Receita por mensagem: 0.01 USDC
   - Integração com economia do bot
+  - **API de Mensagens**: Envio de mensagens via HTTP (/api/v1/discord/send_dm)
 
 ### 🚀 PRÓXIMAS INTEGRAÇÕES
 - **Telegram** - Interface alternativa
@@ -79,6 +80,7 @@
 3. **Testar Bot Discord**
    - Adicionar bot ao servidor com link de convite
    - Testar comandos: `!chat Olá`, `!economy`, `!status`
+   - Testar comando de admin: `!dm <ID> Olá`
 
 ### PRIORIDADE 2 (HOJE)
 4. **Monitorar Receita Gerada** - Verificar pagamentos automáticos
@@ -94,6 +96,7 @@ SOLANA_PRIVATE_KEY=REMOVIDO_POR_SEGURANCA
 GEMINI_API_KEY=REMOVIDO_POR_SEGURANCA
 SIMULATION_MODE=false
 9ROUTER_API_KEY=REMOVIDO_POR_SEGURANCA
+API_AUTH_TOKEN=bernassecret
 ```
 
 ### ENDPOINTS DISPONÍVEIS
@@ -103,33 +106,37 @@ MOLTBOOK: https://bernas-agent.onrender.com/moltbook
 Health Check: https://bernas-agent.onrender.com/api/v1/health
 Status: https://bernas-agent.onrender.com/api/v1/status
 Discord Diagnostic: https://bernas-agent.onrender.com/test/discord
+Discord API (POST): https://bernas-agent.onrender.com/api/v1/discord/send_dm
 ```
 
 ### REPOSITÓRIO
 - **GitHub**: https://github.com/Bernas1221/bernas-agent
 - **Branch**: main
-- **Último commit**: Fix: Discord bot help command conflict and privileged intents
+- **Último commit**: Add: Discord message API and admin commands for sending messages to anyone
 - **Arquivos importantes**:
   - `start_all.py` - Script de inicialização completo
   - `src/discord/discord_bot.py` - Bot Discord com comandos
+  - `src/discord/message_api.py` - API para envio de mensagens
   - `src/revenue/revenue_generators.py` - +30 formas de gerar dinheiro
   - `src/monitoring/moltbook_dashboard.py` - Dashboard MOLTBOOK
   - `DISCORD_SETUP_GUIDE.md` - Guia de configuração do Discord
+  - `DISCORD_MESSAGING_GUIDE.md` - Guia de mensagens para usuários
 
 ## 🎯 RESUMO DO PROGRESSO
 
 ### ✅ CONCLUÍDO HOJE
 1. **Nome atualizado para "BERNAS-DA-SAL"** em todos os arquivos
-2. **Discord Bot implementado completamente** com 7 comandos
+2. **Discord Bot implementado completamente** com 10 comandos
 3. **+30 Geradores de Receita** adicionados
 4. **MOLTBOOK Dashboard** implementado
 5. **Correção de encoding** (remoção de emojis para Render.com)
 6. **Sistema de diagnóstico** para problemas do Discord
 7. **Guia de configuração** detalhado criado
+8. **API de Mensagens Discord** para envio de DMs via HTTP/Comandos
 
 ### 📈 STATUS ATUAL
 - **HTTP Server**: ✅ ONLINE (Render.com)
-- **Discord Bot**: ❌ OFFLINE (aguardando intents)
+- **Discord Bot**: ✅ ONLINE (aguardando intents para responder)
 - **Economia**: ✅ GERANDO RECEITA
 - **Dashboard**: ✅ FUNCIONAL
 - **Pagamentos**: ✅ AUTOMÁTICOS (a cada 10 USDC)
@@ -137,4 +144,5 @@ Discord Diagnostic: https://bernas-agent.onrender.com/test/discord
 **🤖 BERNAS-DA-SAL - Bot de Economia Autônoma entre IAs**
 **🎯 Objetivo: Gerar $1000 USDC/dia automaticamente**
 **🚀 Status: PRODUÇÃO - Gerando receita agora mesmo**
-**⚠️ Discord: AGUARDANDO CONFIGURAÇÃO FINAL**
+**⚠️ Discord: AGUARDANDO CONFIGURAÇÃO FINAL DE INTENTS**
+
