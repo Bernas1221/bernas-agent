@@ -37,28 +37,31 @@ async def start_discord_bot():
     """Inicia o bot Discord"""
     try:
         from src.discord.discord_bot import start_discord_bot as start_discord
-        logger.info("🤖 Iniciando Discord Bot...")
+        logger.info("Iniciando Discord Bot...")
 
         token = os.getenv("DISCORD_BOT_TOKEN")
         if not token:
-            logger.warning("⚠️  DISCORD_BOT_TOKEN não configurado no ambiente!")
+            logger.warning("ALERTA: DISCORD_BOT_TOKEN nao configurado no ambiente!")
             return None
 
-        logger.info(f"✅ Token detectado (comprimento: {len(token)})")
+        logger.info(f"Token detectado (comprimento: {len(token)})")
+
+        # Log parcial do token para depuracao segura
+        logger.info(f"Token prefixo: {token[:10]}...")
 
         bot = await start_discord()
         if bot:
-            logger.info("✅ Discord Bot iniciado com sucesso")
+            logger.info("Discord Bot iniciado com sucesso")
             return bot
         else:
-            logger.warning("⚠️  Discord Bot falhou ao iniciar (possível token inválido ou falta de permissões)")
+            logger.warning("Discord Bot falhou ao iniciar (possivel token invalido ou falta de permissoes)")
             return None
 
     except ImportError as e:
-        logger.warning(f"⚠️  Módulo Discord não disponível: {e}")
+        logger.warning(f"Modulo Discord nao disponivel: {e}")
         return None
     except Exception as e:
-        logger.error(f"❌ Erro ao iniciar Discord Bot: {e}")
+        logger.error(f"Erro ao iniciar Discord Bot: {e}")
         return None
 
 async def start_moltbook_dashboard():

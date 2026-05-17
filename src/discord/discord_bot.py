@@ -343,13 +343,13 @@ class BernasDiscordBot(commands.Bot):
 
     async def on_ready(self):
         """Evento quando o bot está pronto"""
-        logger.info(f"✅ Discord Bot conectado como {self.user}")
-        logger.info(f"📊 Servidores: {len(self.guilds)}")
+        logger.info(f"Discord Bot conectado como {self.user}")
+        logger.info(f"Servidores: {len(self.guilds)}")
 
         # Definir status
         activity = discord.Activity(
             type=discord.ActivityType.watching,
-            name="💰 Gerando receita 24/7"
+            name="Gerando receita 24/7"
         )
         await self.change_presence(activity=activity)
 

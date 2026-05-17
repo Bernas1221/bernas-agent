@@ -13,9 +13,9 @@ async def health_check(request):
     """Endpoint de health check"""
     return web.json_response({
         "status": "healthy",
-        "service": "BERNAS-AGENT",
+        "service": "BERNAS-DA-SAL",
         "version": "1.0.0",
-        "timestamp": "2026-05-17T06:01:43Z",
+        "timestamp": "2026-05-17T08:21:30Z",
         "environment": os.getenv("RENDER", "local")
     })
 
@@ -38,8 +38,8 @@ async def status_check(request):
 
     return web.json_response({
         "status": "running",
-        "name": "BERNAS-AGENT",
-        "description": "Bot de Economia Autônoma entre IAs",
+        "name": "BERNAS-DA-SAL",
+        "description": "Bot de Economia Autonoma entre IAs",
         "components": {
             "http_api": "active",
             "simulation_mode": env_vars["SIMULATION_MODE"],
