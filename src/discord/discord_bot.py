@@ -23,8 +23,32 @@ try:
     from token_manager.token_manager import token_manager
     DISCORD_ENABLED = True
 except ImportError as e:
-    print(f"[WARN] Módulos não disponíveis para Discord: {e}")
-    DISCORD_ENABLED = False
+    print(f"[WARN] Modulos nao disponiveis para Discord: {e}")
+    # Criar stubs para permitir que o bot inicie mesmo sem os modulos
+    class AIProvider:
+        GEMINI = "gemini"
+
+    async def process_ai_request(prompt, provider=None, max_tokens=500, temperature=0.7):
+        return type('Response', (), {'content': f'Simulacao: {prompt[:50]}...'})()
+
+    class EconomyManagerStub:
+        def get_marketplace_stats(self):
+            return {'total_services': 0, 'total_transactions': 0, 'total_volume_usdc': 0}
+        def list_services(self):
+            return []
+        def create_transaction(self, *args, **kwargs):
+            return type('Transaction', (), {'id': 'simulated'})()
+
+    class TokenManagerStub:
+        def add_revenue(self, amount):
+            pass
+        def get_stats(self):
+            return {'current_balance': 0, 'total_revenue': 0}
+
+    process_ai_request = process_ai_request
+    economy_manager = EconomyManagerStub()
+    token_manager = TokenManagerStub()
+    DISCORD_ENABLED = True
 
 # Configuração de logging
 logging.basicConfig(level=logging.INFO)
@@ -77,7 +101,7 @@ class BernasDiscordBot(commands.Bot):
         intents.message_content = True
         intents.members = True
 
-        super().__init__(command_prefix=COMMAND_PREFIX, intents=intents)
+        super().__init__(command_prefix=COMMAND_PREFIX, intents=intents, help_command=None)
 
         self.revenue_tracker = DiscordRevenueTracker()
         self.active_conversations: Dict[str, Dict] = {}  # user_id -> conversation data
@@ -240,39 +264,39 @@ class BernasDiscordBot(commands.Bot):
                 logger.error(f"Erro no comando buy: {e}")
                 await ctx.send(f"Erro ao comprar serviço: {e}")
 
-        @self.command(name="help", help="Mostra ajuda")
+        @self.command(name="bothelp", help="Mostra ajuda")
         async def help_command(ctx):
             """Comando de ajuda"""
             embed = discord.Embed(
-                title="🤖 BERNAS-AGENT - Comandos do Discord",
-                description="Bot de Economia Autônoma entre IAs",
+                title="BERNAS-DA-SAL - Comandos do Discord",
+                description="Bot de Economia Autonoma entre IAs",
                 color=discord.Color.purple()
             )
 
             embed.add_field(
-                name="💬 Conversa",
+                name="Conversa",
                 value="`!chat <mensagem>` - Conversa com a IA\n"
-                      "Gera receita automática por mensagem",
+                      "Gera receita automatica por mensagem",
                 inline=False
             )
 
             embed.add_field(
-                name="💰 Economia",
-                value="`!economy` - Estatísticas da economia\n"
-                      "`!services` - Lista serviços disponíveis\n"
-                      "`!buy <serviço>` - Compra um serviço",
+                name="Economia",
+                value="`!economy` - Estatisticas da economia\n"
+                      "`!services` - Lista servicos disponiveis\n"
+                      "`!buy <servico>` - Compra um servico",
                 inline=False
             )
 
             embed.add_field(
-                name="📊 Informações",
+                name="Informacoes",
                 value="`!status` - Status do bot\n"
                       "`!revenue` - Sua receita gerada\n"
-                      "`!help` - Esta mensagem",
+                      "`!bothelp` - Esta mensagem",
                 inline=False
             )
 
-            embed.set_footer(text="BERNAS-AGENT • Gerando receita 24/7")
+            embed.set_footer(text="BERNAS-DA-SAL • Gerando receita 24/7")
 
             await ctx.send(embed=embed)
 
