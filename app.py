@@ -22,7 +22,7 @@ async def health_check(request):
 async def status_check(request):
     """Endpoint de status"""
     import os
-    from datetime import datetime
+    import time
 
     # Verificar variáveis de ambiente
     env_vars = {
@@ -55,7 +55,7 @@ async def status_check(request):
         },
         "revenue_system": "active",
         "token_manager": "active",
-        "timestamp": datetime.now().isoformat()
+        "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
     })
 
 async def dashboard(request):
