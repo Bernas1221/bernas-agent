@@ -1,0 +1,16 @@
+# BERNAS-AGENT - Dependências Essenciais para Render.com
+# Python 3.11+ requerido
+
+# CORE & ASYNC
+aiohttp>=3.9.0
+httpx>=0.25.0
+
+# SERVER (para Render.com)
+gunicorn>=21.0.0
+
+# UTILITÁRIOS
+python-dotenv>=1.0.0
+pydantic>=2.0.0
+
+# BLOCKCHAIN - SOLANA (opcional para simulação)
+base58>=2.1.1
