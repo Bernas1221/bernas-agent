@@ -33,7 +33,7 @@ logger = logging.getLogger(__name__)
 # Configuração
 DISCORD_TOKEN = os.getenv("DISCORD_BOT_TOKEN", "")
 COMMAND_PREFIX = "!"
-BOT_NAME = "BERNAS-AGENT"
+BOT_NAME = "BERNAS-DA-SAL"
 REVENUE_PER_MESSAGE = Decimal("0.01")  # 0.01 USDC por mensagem
 
 class DiscordRevenueTracker:
@@ -70,7 +70,7 @@ class DiscordRevenueTracker:
         return stats
 
 class BernasDiscordBot(commands.Bot):
-    """Bot Discord do BERNAS-AGENT"""
+    """Bot Discord do BERNAS-DA-SAL"""
 
     def __init__(self):
         intents = discord.Intents.default()
@@ -107,7 +107,7 @@ class BernasDiscordBot(commands.Bot):
 
                 if response and response.content:
                     # Enviar resposta
-                    await ctx.send(f"**BERNAS-AGENT**: {response.content}\n\n"
+                    await ctx.send(f"**BERNAS-DA-SAL**: {response.content}\n\n"
                                   f"💰 *Receita gerada: {revenue} USDC*")
                 else:
                     await ctx.send("Desculpe, não consegui processar sua mensagem.")

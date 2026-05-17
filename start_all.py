@@ -39,18 +39,19 @@ async def start_discord_bot():
         from src.discord.discord_bot import start_discord_bot as start_discord
         logger.info("🤖 Iniciando Discord Bot...")
 
-        # Verificar se token está configurado
-        if not os.getenv("DISCORD_BOT_TOKEN"):
-            logger.warning("⚠️  DISCORD_BOT_TOKEN não configurado. Discord Bot desativado.")
-            logger.info("💡 Configure: DISCORD_BOT_TOKEN=seu_token_no_render.com")
+        token = os.getenv("DISCORD_BOT_TOKEN")
+        if not token:
+            logger.warning("⚠️  DISCORD_BOT_TOKEN não configurado no ambiente!")
             return None
+
+        logger.info(f"✅ Token detectado (comprimento: {len(token)})")
 
         bot = await start_discord()
         if bot:
             logger.info("✅ Discord Bot iniciado com sucesso")
             return bot
         else:
-            logger.warning("⚠️  Discord Bot não pôde ser iniciado")
+            logger.warning("⚠️  Discord Bot falhou ao iniciar (possível token inválido ou falta de permissões)")
             return None
 
     except ImportError as e:

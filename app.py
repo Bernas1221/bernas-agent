@@ -21,16 +21,40 @@ async def health_check(request):
 
 async def status_check(request):
     """Endpoint de status"""
+    import os
+
+    # Verificar variáveis de ambiente
+    env_vars = {
+        "DISCORD_BOT_TOKEN": "present" if os.getenv("DISCORD_BOT_TOKEN") else "missing",
+        "SOLANA_PRIVATE_KEY": "present" if os.getenv("SOLANA_PRIVATE_KEY") else "missing",
+        "SIMULATION_MODE": os.getenv("SIMULATION_MODE", "true"),
+        "PORT": os.getenv("PORT", "8080"),
+        "RENDER": os.getenv("RENDER", "false")
+    }
+
+    # Verificar comprimento do token (se presente)
+    discord_token = os.getenv("DISCORD_BOT_TOKEN", "")
+    token_length = len(discord_token) if discord_token else 0
+
     return web.json_response({
         "status": "running",
         "name": "BERNAS-AGENT",
         "description": "Bot de Economia Autônoma entre IAs",
         "components": {
             "http_api": "active",
-            "simulation_mode": "active"
+            "simulation_mode": env_vars["SIMULATION_MODE"],
+            "discord_bot": "active" if env_vars["DISCORD_BOT_TOKEN"] == "present" else "inactive",
+            "solana_wallet": "active" if env_vars["SOLANA_PRIVATE_KEY"] == "present" else "inactive"
+        },
+        "environment": env_vars,
+        "discord_token_info": {
+            "present": env_vars["DISCORD_BOT_TOKEN"] == "present",
+            "length": token_length,
+            "valid_length": token_length > 50  # Tokens geralmente têm >50 chars
         },
         "revenue_system": "active",
-        "token_manager": "active"
+        "token_manager": "active",
+        "timestamp": datetime.now().isoformat()
     })
 
 async def dashboard(request):
@@ -54,7 +78,7 @@ async def dashboard(request):
     </head>
     <body>
         <div class="container">
-            <h1>BERNAS-AGENT Dashboard</h1>
+            <h1>BERNAS-DA-SAL 🤖 Dashboard</h1>
 
             <div class="status">
                 <h2>✅ Status: ONLINE</h2>
